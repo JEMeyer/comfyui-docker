@@ -1,0 +1,40 @@
+name: Docker Build
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Run daily at midnight
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get latest ComfyUI commit hash
+        id: comfyui_hash
+        run: |
+          COMFYUI_HASH=$(curl -s https://api.github.com/repos/comfyanonymous/ComfyUI/commits/master | jq -r '.sha[:7]')
+          echo "COMFYUI_HASH=$COMFYUI_HASH" >> $GITHUB_OUTPUT
+
+      - name: Check if version exists
+        id: version_check
+        run: |
+          VERSION_EXISTS=$(curl -s -f https://ghcr.io/v2/jemeyer/comfyui/manifests/${{ steps.comfyui_hash.outputs.COMFYUI_HASH }} > /dev/null 2>&1; echo $?)
+          if [ "$VERSION_EXISTS" -eq 0 ]; then
+            echo "VERSION_EXISTS=true" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION_EXISTS=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build and push Docker image
+        if: steps.version_check.outputs.VERSION_EXISTS == 'false'
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/jemeyer/comfyui:latest
+            ghcr.io/jemeyer/comfyui:${{ steps.comfyui_hash.outputs.COMFYUI_HASH }}
