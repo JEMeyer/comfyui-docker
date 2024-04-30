@@ -52,5 +52,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}:latest
-            ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}:${{ steps.comfyui_hash.outputs.COMFYUI_HASH }}
+            ghcr.io/${{ env.OWNER_LC }}/comfyui:latest
+            ghcr.io/${{ env.OWNER_LC }}/comfyui:${{ steps.comfyui_hash.outputs.COMFYUI_HASH }}
