@@ -8,10 +8,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get latest ComfyUI commit hash
         id: comfyui_hash
@@ -31,7 +34,7 @@ jobs:
 
       - name: Build and push Docker image
         if: steps.version_check.outputs.VERSION_EXISTS == 'false'
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: true
