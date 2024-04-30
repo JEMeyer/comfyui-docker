@@ -13,6 +13,12 @@ jobs:
       contents: read
 
     steps:
+      - name: Set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: "${{ github.repository_owner }}"
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -25,12 +31,19 @@ jobs:
       - name: Check if version exists
         id: version_check
         run: |
-          VERSION_EXISTS=$(curl -s -f https://ghcr.io/v2/jemeyer/comfyui/manifests/${{ steps.comfyui_hash.outputs.COMFYUI_HASH }} > /dev/null 2>&1; echo $?)
+          VERSION_EXISTS=$(curl -s -f https://ghcr.io/v2/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/manifests/${{ steps.comfyui_hash.outputs.COMFYUI_HASH }} > /dev/null 2>&1; echo $?)
           if [ "$VERSION_EXISTS" -eq 0 ]; then
             echo "VERSION_EXISTS=true" >> $GITHUB_OUTPUT
           else
             echo "VERSION_EXISTS=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
         if: steps.version_check.outputs.VERSION_EXISTS == 'false'
@@ -39,5 +52,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/jemeyer/comfyui:latest
-            ghcr.io/jemeyer/comfyui:${{ steps.comfyui_hash.outputs.COMFYUI_HASH }}
+            ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}:latest
+            ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}:${{ steps.comfyui_hash.outputs.COMFYUI_HASH }}
