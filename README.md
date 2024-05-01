@@ -97,4 +97,4 @@ Pull requests to improve the Docker image build process or the GitHub Actions wo
 
 ## License
 
-This project is licensed under the TBD License - see the [LICENSE](https://github.com/jemeyer/comfyui-docker/blob/main/LICENSE) file for details.
+This project is licensed under the GPL-3.0 License - see the [LICENSE](https://github.com/jemeyer/comfyui-docker/blob/main/LICENSE) file for details.
