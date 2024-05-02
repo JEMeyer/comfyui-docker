@@ -53,7 +53,8 @@ You can also use ComfyUI with Docker Compose. Here's an example docker-compose.y
 services:
   comfyui:
     image: ghcr.io/jemeyer/comfyui:latest
-    ports: - 8188:8188
+    ports:
+      - 8188:8188
     deploy:
       resources:
         reservations:
