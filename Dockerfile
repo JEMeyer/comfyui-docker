@@ -22,4 +22,4 @@ RUN pip3 install torch torchvision torchaudio --extra-index-url https://download
 EXPOSE 8188
 
 # Set the entrypoint to run ComfyUI
-ENTRYPOINT ["python3", "main.py"]
+ENTRYPOINT ["python3", "main.py", "--listen"]
