@@ -35,24 +35,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check if version exists
-        id: version_check
+      - name: Check if image exists
         run: |
-          echo "Checking if version ${{ steps.comfyui_hash.outputs.COMFYUI_HASH }} exists..."
+          TOKEN=$(echo -n "${{ secrets.GITHUB_TOKEN }}" | base64)
           
-          MANIFEST_URL="https://ghcr.io/v2/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/manifests/${{ steps.comfyui_hash.outputs.COMFYUI_HASH }}"
-          echo "Manifest URL: $MANIFEST_URL"
+          # Perform the manifest check
+          status_code=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $TOKEN" https://ghcr.io/v2/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/manifests/${{ steps.comfyui_hash.outputs.COMFYUI_HASH }})
           
-          CURL_RESPONSE=$(curl -s -w "%{http_code}" -H "Accept: application/vnd.docker.distribution.manifest.v2+json" "$MANIFEST_URL")
-          HTTP_STATUS=$(echo "$CURL_RESPONSE" | tail -c 3)
-          echo "HTTP status code: $HTTP_STATUS"
-          
-          if [ "$HTTP_STATUS" -eq 200 ]; then
-            echo "Version ${{ steps.comfyui_hash.outputs.COMFYUI_HASH }} exists"
-            echo "VERSION_EXISTS=true" >> $GITHUB_OUTPUT
+          if [ "$status_code" -eq 200 ]; then
+            echo "Image $IMAGE_NAME:$IMAGE_TAG exists in GHCR"
+            # Perform actions when the image exists
           else
-            echo "Version ${{ steps.comfyui_hash.outputs.COMFYUI_HASH }} does not exist"
-            echo "VERSION_EXISTS=false" >> $GITHUB_OUTPUT
+            echo "Image $IMAGE_NAME:$IMAGE_TAG does not exist in GHCR"
+            # Perform actions when the image does not exist
           fi
 
       - name: Build and push Docker image
