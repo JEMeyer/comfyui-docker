@@ -35,19 +35,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check if Docker image exists
+      - name: Check if Docker version exists
+        id: version_check
         env:
           IMAGE_NAME: ${{ env.OWNER_LC }}/comfyui
           IMAGE_TAG: ${{ steps.comfyui_hash.outputs.COMFYUI_HASH }}
         run: |
-          TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} | base64)
-          result=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $TOKEN" https://ghcr.io/v2/${IMAGE_NAME}/manifests/${IMAGE_TAG})
-          if [ $result -eq 200 ]; then
+          VERSION_EXISTS=$(curl -s -f https://ghcr.io/v2/${IMAGE_NAME}/manifests/${IMAGE_TAG} > /dev/null 2>&1; echo $?)
+          if [ "$VERSION_EXISTS" -eq 0 ]; then
             echo "Image ${IMAGE_NAME}:${IMAGE_TAG} already exists"
-            echo "IMAGE_EXISTS=true" >> $GITHUB_ENV
+            echo "VERSION_EXISTS=true" >> $GITHUB_OUTPUT
           else
             echo "Image ${IMAGE_NAME}:${IMAGE_TAG} does not exist"
-            echo "IMAGE_EXISTS=false" >> $GITHUB_ENV
+            echo "VERSION_EXISTS=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Build and push Docker image
