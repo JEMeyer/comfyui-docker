@@ -35,19 +35,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check if image exists
+      - name: Check if Docker image exists
+        env:
+          IMAGE_NAME: ${{ env.OWNER_LC }}/${{ github.event.repository.name }}
+          IMAGE_TAG: ${{ steps.comfyui_hash.outputs.COMFYUI_HASH }}
         run: |
-          TOKEN=$(echo -n "${{ secrets.GITHUB_TOKEN }}" | base64)
-          
-          # Perform the manifest check
-          status_code=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $TOKEN" https://ghcr.io/v2/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/manifests/${{ steps.comfyui_hash.outputs.COMFYUI_HASH }})
-          
-          if [ "$status_code" -eq 200 ]; then
-            echo "Image $IMAGE_NAME:$IMAGE_TAG exists in GHCR"
-            # Perform actions when the image exists
+          TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} | base64)
+          result=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $TOKEN" https://ghcr.io/v2/${IMAGE_NAME}/manifests/${IMAGE_TAG})
+          if [ $result -eq 200 ]; then
+            echo "Image ${IMAGE_NAME}:${IMAGE_TAG} already exists"
+            echo "IMAGE_EXISTS=true" >> $GITHUB_ENV
           else
-            echo "Image $IMAGE_NAME:$IMAGE_TAG does not exist in GHCR"
-            # Perform actions when the image does not exist
+            echo "Image ${IMAGE_NAME}:${IMAGE_TAG} does not exist"
+            echo "IMAGE_EXISTS=false" >> $GITHUB_ENV
           fi
 
       - name: Build and push Docker image
