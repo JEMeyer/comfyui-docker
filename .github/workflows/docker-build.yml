@@ -38,7 +38,7 @@ jobs:
       - name: Check if version exists
         id: version_check
         run: |
-          VERSION_EXISTS=$(curl -s -f https://ghcr.io/v2/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/manifests/${{ steps.comfyui_hash.outputs.COMFYUI_HASH }} > /dev/null 2>&1; echo $?)
+          VERSION_EXISTS=$(curl -s -f -H "Accept: application/vnd.docker.distribution.manifest.v2+json" https://ghcr.io/v2/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/manifests/${{ steps.comfyui_hash.outputs.COMFYUI_HASH }} > /dev/null 2>&1; echo $?)
           if [ "$VERSION_EXISTS" -eq 0 ]; then
             echo "VERSION_EXISTS=true" >> $GITHUB_OUTPUT
           else
