@@ -16,7 +16,7 @@ Two Docker images are published to the GitHub Container Registry for each update
 To use the most recent ComfyUI image, pull the `latest` tag:
 
 ```bash
-docker run -p 8188:8188 ghcr.io/jemeyer/comfyui
+docker run -p 8188:8188 ghcr.io/jemeyer/comfyui:latest
 ```
 
 This will start ComfyUI and make it accessible at <http://localhost:8188>.
@@ -28,19 +28,19 @@ If you have an NVIDIA GPU and want to use it with ComfyUI, you can pass the --gp
 - To use all available GPUs:
 
 ```bash
-docker run --gpus all -p 8188:8188 ghcr.io/jemeyer/comfyui
+docker run --gpus all -p 8188:8188 ghcr.io/jemeyer/comfyui:latest
 ```
 
 - To use a specific number of GPUs:
 
 ```bash
-docker run --gpus 2 -p 8188:8188 ghcr.io/jemeyer/comfyui
+docker run --gpus 2 -p 8188:8188 ghcr.io/jemeyer/comfyui:latest
 ```
 
 - To use a specific GPU by its device ID (e.g., GPU 2):
 
 ```bash
-docker run --gpus device=2 -p 8188:8188 ghcr.io/jemeyer/comfyui
+docker run --gpus device=2 -p 8188:8188 ghcr.io/jemeyer/comfyui:latest
 ```
 
 Note that you need to have the NVIDIA Container Toolkit installed on your host for GPU passthrough to work.
