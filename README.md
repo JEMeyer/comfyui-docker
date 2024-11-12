@@ -62,6 +62,16 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
+    volumes:
+      - ./models:/app/models
+      - ./input:/app/input
+      - ./output:/app/output
+      - user:/app/user
+      - temp:/app/temp
+
+volumes:
+  user:
+	temp:
 ```
 
 This configuration will start a ComfyUI container using the latest image and make it accessible at <http://localhost:8188>. It also configures the container to use 1 GPU.
