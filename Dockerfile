@@ -15,6 +15,9 @@ WORKDIR /app
 # Install Python dependencies
 RUN pip3 install -r requirements.txt
 
+# For https://github.com/jags111/efficiency-nodes-comfyui, which is for https://github.com/StableCanvas/comfyui-client
+RUN pip3 install simpleeval
+
 # Install PyTorch with CUDA support for NVIDIA GPUs
 RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121
 
