@@ -17,9 +17,9 @@ jobs:
         run: |
           echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
         env:
-          OWNER: "${{ github.repository_owner }}"
+          OWNER: ${{ github.repository_owner }}
 
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Get latest ComfyUI commit hash
