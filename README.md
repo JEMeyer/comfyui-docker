@@ -71,7 +71,7 @@ services:
 
 volumes:
   user:
-    temp:
+  temp:
 ```
 
 This configuration will start a ComfyUI container using the latest image and make it accessible at <http://localhost:8188>. It also configures the container to use 1 GPU.
