@@ -11,11 +11,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Clone the ComfyUI repo
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git /app
+# Set the working directory
 WORKDIR /app
-RUN git clone https://github.com/comfyanonymous/ComfyUI.git .
 
 # Install Python dependencies
-COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # For https://github.com/jags111/efficiency-nodes-comfyui, which is for https://github.com/StableCanvas/comfyui-client
