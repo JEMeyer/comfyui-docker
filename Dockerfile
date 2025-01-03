@@ -34,7 +34,7 @@ RUN pip install torch torchvision torchaudio --extra-index-url https://download.
 EXPOSE 8188
 
 # Set the entrypoint to run ComfyUI
-ENTRYPOINT ["python3", "main.py", "--listen"]
+ENTRYPOINT ["python3", "/app/main.py", "--listen"]
 
 # Use the official Python image from the Docker Hub for ARM64
 FROM --platform=$BUILDPLATFORM python:3.10-slim AS arm64
@@ -49,4 +49,4 @@ RUN pip install torch torchvision torchaudio --extra-index-url https://download.
 EXPOSE 8188
 
 # Set the entrypoint to run ComfyUI
-ENTRYPOINT ["python3", "main.py", "--listen"]
+ENTRYPOINT ["python3", "/app/main.py", "--listen"]
